@@ -36,7 +36,7 @@ describe("Database creation", () => {
       .fn()
       .mockRejectedValueOnce(new Error("Database already exists"));
 
-    await createDatabase();
+    await expect(createDatabase()).rejects.toThrow("Database already exists");
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       expect.stringContaining("Error occurred while creating database:")
@@ -53,7 +53,8 @@ describe("Database creation", () => {
       .fn()
       .mockRejectedValueOnce(new Error("Credentials are incorrect"));
 
-    await createDatabase();
+      await expect(createDatabase()).rejects.toThrow("Credentials are incorrect");
+
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       expect.stringContaining("Error occurred while creating database:")

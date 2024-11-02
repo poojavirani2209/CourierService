@@ -19,6 +19,7 @@ export async function createDatabase() {
     console.log(`Database ${dbName} created successfully.`); // Need a different log file
   } catch (error) {
     console.error(`Error occurred while creating database: ${error}`);
+    throw error;
   } finally {
     await dbClient.end();
   }

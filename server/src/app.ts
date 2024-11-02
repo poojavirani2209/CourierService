@@ -16,6 +16,7 @@ export const startApp = async () => {
       await createDatabase();
     } catch (error: any) {
       console.log(`Error occurred while setup ${error}`);
+      throw error;
     }
   });
 };
