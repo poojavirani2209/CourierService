@@ -1,6 +1,7 @@
 import express from "express";
 import { createDatabase } from "./database/database";
-
+import userRouter from "./routes/userRoutes";
+import cors from "cors";
 /**
  * Create a new express server application listening on the port specified.
  */
@@ -8,6 +9,10 @@ let port = 8887;
 let app = express();
 
 app.use(express.json());
+app.use(cors());
+
+
+app.use("/users", userRouter);
 
 export const startApp = async () => {
   app.listen(port, async () => {

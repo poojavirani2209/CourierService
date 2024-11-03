@@ -26,7 +26,6 @@ describe("Database creation", () => {
     await createDatabase();
 
     expect(dbClientMock.query).toHaveBeenCalledWith(`CREATE DATABASE testdb`);
-    expect(dbClientMock.end).toHaveBeenCalled();
   });
 
   test("Given a db already exists, when trying to create database, then it should log an error when database creation fails", async () => {
@@ -53,8 +52,7 @@ describe("Database creation", () => {
       .fn()
       .mockRejectedValueOnce(new Error("Credentials are incorrect"));
 
-      await expect(createDatabase()).rejects.toThrow("Credentials are incorrect");
-
+    await expect(createDatabase()).rejects.toThrow("Credentials are incorrect");
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       expect.stringContaining("Error occurred while creating database:")

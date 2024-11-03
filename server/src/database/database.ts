@@ -1,5 +1,6 @@
 import { Pool } from "pg";
 import dotenv from "dotenv";
+import { createUserTable } from "../models/user";
 
 dotenv.config();
 
@@ -7,7 +8,7 @@ let dbClient: Pool;
 
 export async function createDatabase() {
   const { DATABASE_URL, DATABASE_NAME } = process.env;
-  const dbName = DATABASE_NAME || "courier";
+  const dbName = DATABASE_NAME || "courierService";
 
   dbClient = new Pool({
     connectionString: DATABASE_URL,
@@ -17,12 +18,28 @@ export async function createDatabase() {
   try {
     await dbClient.query(`CREATE DATABASE ${dbName}`);
     console.log(`Database ${dbName} created successfully.`); // Need a different log file
+    await initializeTables();
   } catch (error) {
-    console.error(`Error occurred while creating database: ${error}`);
-    throw error;
-  } finally {
-    await dbClient.end();
+    if (error.code == "42P04") {
+      console.error(`The Database already exists`);
+      await initializeTables();
+    } else {
+      console.error(`Error occurred while creating database: ${error}`);
+      await dbClient.end();
+      throw error;
+    }
   }
 }
 
-export default dbClient;
+const initializeTables = async () => {
+  await createUserTable();
+};
+
+export const getDbClient = () => {
+  if (!dbClient) {
+    throw new Error(
+      "Database client is not initialized. Make sure to call createDatabase first."
+    );
+  }
+  return dbClient;
+};
