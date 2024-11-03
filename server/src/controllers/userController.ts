@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { NewUser } from "../types/user";
+import { NewUser, UserLoginDetails } from "../types/user";
 import { addNewUser, findUserByEmail } from "../models/user";
 import { v4 as uuidv4 } from "uuid";
 
@@ -25,6 +25,25 @@ export async function register(userDetails: NewUser) {
     return `User registered successfully`;
   } catch (error) {
     console.error(`Error occurred while adding a new user in users table`);
+    throw error;
+  }
+}
+
+export async function login(loginDetails: UserLoginDetails) {
+  const { email, password } = loginDetails;
+
+  try {
+    const user = await findUserByEmail(email);
+    if (user && (await bcrypt.compare(password, user.password))) {
+      console.log(
+        `Logged in successfully for user with email ${loginDetails.email}`
+      );
+      return `Logged in successfully`;
+    } else {
+      return `Invalid credentials`;
+    }
+  } catch (error) {
+    console.error(`Error occurred while logging in.`);
     throw error;
   }
 }

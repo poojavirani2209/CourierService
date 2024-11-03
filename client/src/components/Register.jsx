@@ -6,27 +6,27 @@ function Register() {
     const [password, setPassword] = useState('');
     const [senderName, setSenderName] = useState('');
     const [senderAddress, setSenderAddress] = useState('');
-    const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
 
 
     const handleRegister = async () => {
         try {
-            setError('');
+            setMessage('');
             if (!email || !password || !senderName || !senderAddress) {
-                setError('All fields are required');
+                setMessage('All fields are required');
                 return;
             }
             const registrationResponse = await RequestProvider.request().post('/users/register', { email, password, senderName, senderAddress });
-            alert(registrationResponse);
+            setMessage(registrationResponse);
         } catch (error) {
-            alert('Registration failed!');
+            setMessage('Registration failed!');
         }
     };
 
     return (
         <div>
             <h2>Register</h2>
-            {error && <div style={{ color: 'red' }}>{error}</div>}
+            {message && <div style={{ color: 'red' }}>{message}</div>}
             <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
             <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
             <input type="text" placeholder="Sender Name" onChange={(e) => setSenderName(e.target.value)} />
