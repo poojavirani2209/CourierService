@@ -26,7 +26,7 @@ shipmentRouter.post("/create", async (req, res) => {
 shipmentRouter.get("/:trackingNumber", async (req, res) => {
   try {
     const { trackingNumber } = req.params;
-    console.log(trackingNumber)
+    console.log(trackingNumber);
 
     const shipmentDetails = await shipmentController.trackShipment(
       trackingNumber
@@ -45,7 +45,11 @@ shipmentRouter.get("/", async (req, res) => {
     const { userId } = req.body;
 
     const shipments = await shipmentController.getAllShipments(userId);
-    res.status(200).json(shipments);
+    if (shipments == "Invalid UserId") {
+      res.status(402);
+    } else {
+      res.status(200).json(shipments);
+    }
   } catch (error) {
     res.status(500).json({ message: "Error fetching shipments" });
   }

@@ -10,7 +10,7 @@ function Dashboard() {
         const fetchUserAndShipments = async () => {
             try {
                 const shipmentsResponse = await RequestProvider.request().get('/shipments');
-                setShipments(shipmentsResponse);
+                shipmentsResponse.status == 200 && setShipments(shipmentsResponse);
             } catch (err) {
                 setError('Failed to fetch data');
             }

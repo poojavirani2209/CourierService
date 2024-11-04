@@ -84,7 +84,7 @@ export async function findShipmentByUserId(
 ): Promise<Array<ShipmentDetails> | null> {
   try {
     const result = await getDbClient().query(
-      "SELECT * FROM shipments WHERE userId = $1",
+      "SELECT * FROM shipments WHERE user_id = $1",
       [userId]
     );
     return result.rows.length > 0 ? result.rows : null;

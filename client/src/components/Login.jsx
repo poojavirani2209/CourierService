@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import RequestProvider from '../api/apiRequestProvider';
+import { useNavigate } from 'react-router-dom';
 
-function Login() {
+function Login({ onLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
 
     const handleLogin = async () => {
@@ -20,6 +22,8 @@ function Login() {
             }
             else {
                 setMessage(loginResponse.data);
+                onLogin();
+                navigate("/")
             }
         } catch (error) {
             setMessage(`Login failed!`);
