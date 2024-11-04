@@ -15,7 +15,12 @@ function Login() {
                 return;
             }
             const loginResponse = await RequestProvider.request().post(`/users/login`, { email, password });
-            setMessage(loginResponse);
+            if (loginResponse.status == 402) {
+                setMessage(loginResponse.response.data);
+            }
+            else {
+                setMessage(loginResponse.data);
+            }
         } catch (error) {
             setMessage(`Login failed!`);
         }

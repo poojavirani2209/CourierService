@@ -9,7 +9,7 @@ function TrackShipment() {
   const handleTrackShipment = async () => {
     try {
       const shipmentDetails = await RequestProvider.request().get(`/shipments/${trackingNumber}`);
-      setShipment(shipmentDetails);
+      setShipment(shipmentDetails.data);
     } catch (error) {
       setShipment(null);
       setError(`Shipment was not found!`)
@@ -25,7 +25,7 @@ function TrackShipment() {
       {shipment && (
         <div>
           <h3>Shipment Details:</h3>
-          <p>Recipient: {shipment.recipientName}</p>
+          <p>Recipient: {shipment.recipient_name}</p>
           <p>Status: {shipment.status}</p>
         </div>
       )}

@@ -17,7 +17,7 @@ function CreateShipment() {
         return;
       }
       let shipmentCreationResponse = await RequestProvider.request().post('/shipments/create', { userId, recipientName, recipientAddress, shipmentDetails });
-      setMessage(shipmentCreationResponse);
+      setMessage(shipmentCreationResponse.data);
     } catch (error) {
       setMessage('Failed to create shipment!');
     }

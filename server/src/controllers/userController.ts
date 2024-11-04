@@ -3,7 +3,7 @@ import { NewUser, UserLoginDetails } from "../types/user";
 import { addNewUser, findUserByEmail } from "../models/user";
 import { v4 as uuidv4 } from "uuid";
 
-export async function register(userDetails: NewUser) {
+export async function register(userDetails: NewUser, isAdmin:boolean) {
   const { email, password, senderName, senderAddress } = userDetails;
 
   try {
@@ -15,7 +15,6 @@ export async function register(userDetails: NewUser) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await addNewUser({
-      id: uuidv4(),
       email,
       password: hashedPassword,
       senderName,

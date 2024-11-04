@@ -1,10 +1,12 @@
 import {
   createShipment,
+  getAllShipments,
   trackShipment,
 } from "../../controllers/shipmentController";
 import {
   addShipment,
   findShipmentByTrackingNumber,
+  findShipmentByUserId,
 } from "../../models/shipment";
 import { NewShipment, ShipmentStatus } from "../../types/shipment";
 
@@ -23,10 +25,9 @@ describe("Create new shipment", () => {
   });
 
   test(`Given new shipment details, when creating shipment, then it should create it successfully`, async () => {
-    jest
-      .spyOn(Date, "now")
-      .mockImplementation(() => new Date("2024-01-01T00:00:00Z").getTime());
-    (addShipment as jest.Mock).mockResolvedValueOnce(undefined);
+    (addShipment as jest.Mock).mockResolvedValueOnce(
+      `TRACK-${new Date("2024-01-01T00:00:00Z").getTime()}`
+    );
 
     const trackingNumber = await createShipment(shipmentDetails);
 
@@ -39,7 +40,6 @@ describe("Create new shipment", () => {
         recipientName: shipmentDetails.recipientName,
         recipientAddress: shipmentDetails.recipientAddress,
         shipmentDetails: shipmentDetails.shipmentDetails,
-        status: ShipmentStatus.PENDING,
       })
     );
   });
@@ -58,7 +58,6 @@ describe("Create new shipment", () => {
         recipientName: shipmentDetails.recipientName,
         recipientAddress: shipmentDetails.recipientAddress,
         shipmentDetails: shipmentDetails.shipmentDetails,
-        status: ShipmentStatus.PENDING,
       })
     );
   });
@@ -114,5 +113,41 @@ describe("Track a shipment", () => {
       "Database error"
     );
     expect(findShipmentByTrackingNumber).toHaveBeenCalledWith(trackingNumber);
+  });
+});
+
+describe("Get all shipments for a user", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("Given valid user, when fetching all the shipments, then it should return shipments list", async () => {
+    const mockShipments = [
+      { id: "1", recipientName: "User1", status: "COMPLETED" },
+      { id: "2", recipientName: "User2", status: "IN_PROGRESS" },
+    ];
+
+    (findShipmentByUserId as jest.Mock).mockResolvedValue(mockShipments);
+
+    const result = await getAllShipments("1");
+
+    expect(result).toEqual(mockShipments);
+    expect(findShipmentByUserId).toHaveBeenCalledWith("1");
+  });
+
+  test("Given invalid user, when fetching all the shipments, then it should return error", async () => {
+    (findShipmentByUserId as jest.Mock).mockResolvedValue(null);
+
+    const result = await getAllShipments("invalidUserId");
+
+    expect(result).toBe("Invalid UserId");
+    expect(findShipmentByUserId).toHaveBeenCalledWith("invalidUserId");
+  });
+
+  test("Given database error occurrs, when fetching all the shipments, then it should throw error", async () => {
+    const mockError = new Error("Database error");
+    (findShipmentByUserId as jest.Mock).mockRejectedValue(mockError);
+
+    await expect(getAllShipments("1")).rejects.toThrow("Database error");
   });
 });

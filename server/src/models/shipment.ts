@@ -10,7 +10,7 @@ export async function createShipmentTable(): Promise<void> {
     const result = await getDbClient().query(
       `
              CREATE TABLE shipments (
-    id VARCHAR(255) PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
     recipient_name VARCHAR(255) NOT NULL,
     recipient_address TEXT NOT NULL,
@@ -33,33 +33,29 @@ export async function createShipmentTable(): Promise<void> {
   }
 }
 
-export async function addShipment(shipment: ShipmentDetails): Promise<void> {
+export async function addShipment(shipment: NewShipment): Promise<string> {
   const {
-    id,
     userId,
     recipientName,
     recipientAddress,
     shipmentDetails,
-    status,
-    trackingNumber,
-    createdAt,
   } = shipment;
+
+  const trackingNumber = `TRACK-${Date.now()}`;
 
   try {
     const result = await getDbClient().query(
-      "INSERT INTO shipments (id, user_id, recipient_name, recipient_address, shipment_details, tracking_number, status, created_at) VALUES ($1, $2, $3, $4, $5,$6)",
+      "INSERT INTO shipments (user_id, recipient_name, recipient_address, shipment_details, tracking_number, status) VALUES ($1, $2, $3, $4, $5,$6)",
       [
-        id,
         userId,
         recipientName,
         recipientAddress,
         shipmentDetails,
         trackingNumber,
-        status,
-        createdAt,
+        ShipmentStatus.PENDING,
       ]
     );
-    return;
+    return trackingNumber;
   } catch (error) {
     console.error(`Error inserting shipment: ${error}`);
     throw error;
@@ -79,6 +75,21 @@ export async function findShipmentByTrackingNumber(
     console.error(
       `Error finding shipment by tracking number in table: ${error}`
     );
+    throw error;
+  }
+}
+
+export async function findShipmentByUserId(
+  userId: string
+): Promise<Array<ShipmentDetails> | null> {
+  try {
+    const result = await getDbClient().query(
+      "SELECT * FROM shipments WHERE userId = $1",
+      [userId]
+    );
+    return result.rows.length > 0 ? result.rows : null;
+  } catch (error) {
+    console.error(`Error finding shipment by userId in table: ${error}`);
     throw error;
   }
 }

@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import dotenv from "dotenv";
 import { createUserTable } from "../models/user";
+import { createShipmentTable } from "../models/shipment";
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ export async function createDatabase() {
 
   dbClient = new Pool({
     connectionString: DATABASE_URL,
-    database: dbName,
+    database: "postgres",
   });
 
   try {
@@ -33,6 +34,7 @@ export async function createDatabase() {
 
 const initializeTables = async () => {
   await createUserTable();
+  await createShipmentTable();
 };
 
 export const getDbClient = () => {

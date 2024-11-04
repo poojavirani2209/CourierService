@@ -7,7 +7,7 @@ jest.mock('../../api/apiRequestProvider');
 
 describe('TrackShipment', () => {
     const mockShipmentDetails = {
-        recipientName: 'User2',
+        recipient_name: 'User2',
         status: 'IN_PROGRESS',
     };
 
@@ -17,7 +17,7 @@ describe('TrackShipment', () => {
 
     test('Given a valid tracking number, then it should successfully track a shipment', async () => {
         RequestProvider.request.mockReturnValue({
-            get: jest.fn().mockResolvedValueOnce(mockShipmentDetails),
+            get: jest.fn().mockResolvedValueOnce({ data: mockShipmentDetails }),
         });
 
         render(<TrackShipment />);

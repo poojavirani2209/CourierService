@@ -5,6 +5,7 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import CreateShipment from "./components/CreateShipment";
 import TrackShipment from "./components/TrackShipment";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   let serverURL = `http://localhost:8887`;
@@ -19,6 +20,7 @@ function App() {
       <Login></Login>
       <CreateShipment></CreateShipment>
       <TrackShipment></TrackShipment>
+      <Dashboard></Dashboard>
     </>
   );
 }

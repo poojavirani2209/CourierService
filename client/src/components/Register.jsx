@@ -17,7 +17,7 @@ function Register() {
                 return;
             }
             const registrationResponse = await RequestProvider.request().post('/users/register', { email, password, senderName, senderAddress });
-            setMessage(registrationResponse);
+            setMessage(registrationResponse.data);
         } catch (error) {
             setMessage('Registration failed!');
         }

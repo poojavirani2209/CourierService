@@ -20,7 +20,16 @@ export class Request {
       const response = await this.client.post(requestURL, payload);
       return response;
     } catch (error) {
-      return error;
+      throw error;
+    }
+  }
+
+  async get(requestURL, payload) {
+    try {
+      const response = await this.client.get(requestURL, payload);
+      return response;
+    } catch (error) {
+      throw error;
     }
   }
 }

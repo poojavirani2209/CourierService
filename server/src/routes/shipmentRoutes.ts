@@ -25,7 +25,8 @@ shipmentRouter.post("/create", async (req, res) => {
 
 shipmentRouter.get("/:trackingNumber", async (req, res) => {
   try {
-    const { trackingNumber } = req.body;
+    const { trackingNumber } = req.params;
+    console.log(trackingNumber)
 
     const shipmentDetails = await shipmentController.trackShipment(
       trackingNumber
@@ -36,6 +37,17 @@ shipmentRouter.get("/:trackingNumber", async (req, res) => {
       error: `Error occurred while tracking a shipment.`,
       details: error,
     });
+  }
+});
+
+shipmentRouter.get("/", async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const shipments = await shipmentController.getAllShipments(userId);
+    res.status(200).json(shipments);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching shipments" });
   }
 });
 

@@ -30,11 +30,10 @@ describe(`Register a new user`, () => {
     (bcrypt.hash as jest.Mock).mockResolvedValue(`hashedPassword`);
     (addNewUser as jest.Mock).mockResolvedValueOnce(undefined);
 
-    const result = await register(userDetails);
+    const result = await register(userDetails, false);
 
     expect(bcrypt.hash).toHaveBeenCalledWith(userDetails.password, 10);
     expect(addNewUser).toHaveBeenCalledWith({
-      id: `mockedUUID`,
       email: userDetails.email,
       password: `hashedPassword`,
       senderName: userDetails.senderName,
@@ -46,7 +45,7 @@ describe(`Register a new user`, () => {
   test(`Given a user already exists with provided email, when registering user, then it should throw an error.`, async () => {
     (findUserByEmail as jest.Mock).mockResolvedValueOnce(userDetails);
 
-    const result = await register(userDetails);
+    const result = await register(userDetails, false);
 
     expect(findUserByEmail).toHaveBeenCalledWith(userDetails.email);
     expect(bcrypt.hash).not.toHaveBeenCalled();
@@ -62,7 +61,9 @@ describe(`Register a new user`, () => {
       new Error(`Insertion failed`)
     );
 
-    await expect(register(userDetails)).rejects.toThrow(`Insertion failed`);
+    await expect(register(userDetails, false)).rejects.toThrow(
+      `Insertion failed`
+    );
     expect(bcrypt.hash).toHaveBeenCalledWith(userDetails.password, 10);
     expect(addNewUser).toHaveBeenCalled();
   });

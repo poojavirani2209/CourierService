@@ -7,6 +7,7 @@ export interface NewUser {
 
 export interface UserDetails extends NewUser {
   id: string;
+  isAdmin:boolean
 }
 
 export interface UserLoginDetails {

@@ -28,7 +28,7 @@ describe(`Login Component`, () => {
         const mockResponse = `Login successfully`;
 
         (RequestProvider.request).mockReturnValue({
-            post: jest.fn().mockResolvedValue(mockResponse),
+            post: jest.fn().mockResolvedValue({ data: mockResponse }),
         });
 
         render(<Login />);

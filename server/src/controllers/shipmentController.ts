@@ -1,22 +1,19 @@
-import { addShipment, findShipmentByTrackingNumber } from "../models/shipment";
-import { NewShipment, ShipmentStatus } from "../types/shipment";
-import { v4 as uuidv4 } from "uuid";
+import {
+  addShipment,
+  findShipmentByTrackingNumber,
+  findShipmentByUserId,
+} from "../models/shipment";
+import { NewShipment } from "../types/shipment";
 
 export async function createShipment(shipment: NewShipment) {
   const { userId, recipientName, recipientAddress, shipmentDetails } = shipment;
 
-  const trackingNumber = `TRACK-${Date.now()}`;
-
   try {
-    await addShipment({
-      id: uuidv4(),
+    const trackingNumber = await addShipment({
       userId,
       recipientName,
       recipientAddress,
       shipmentDetails,
-      status: ShipmentStatus.PENDING,
-      createdAt: Date.now().toString(),
-      trackingNumber,
     });
     console.log(
       `Inserted shipment successfully with tracking number ${trackingNumber}`
@@ -43,6 +40,21 @@ export async function trackShipment(trackingNumber: string) {
     }
   } catch (error) {
     console.error(`Error occurred while tracking a shipment`);
+    throw error;
+  }
+}
+
+export async function getAllShipments(userId: string) {
+  try {
+    const shipments = await findShipmentByUserId(userId);
+    if (shipments) {
+      console.log(`Successfully attained shipments for userId ${userId}`);
+      return shipments;
+    } else {
+      return `Invalid UserId`;
+    }
+  } catch (error) {
+    console.error(`Error occurred while getting shipments for a user`);
     throw error;
   }
 }

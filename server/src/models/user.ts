@@ -1,16 +1,17 @@
 import { getDbClient } from "../database/database";
-import { UserDetails } from "../types/user";
+import { NewUser, UserDetails } from "../types/user";
 
 export async function createUserTable(): Promise<void> {
   try {
     const result = await getDbClient().query(
       `
-             CREATE TABLE users (
-    id VARCHAR(255) PRIMARY KEY,
+             CREATE TABLE IF NOT EXISTS  users (
+    id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     sender_name VARCHAR(255),
-    sender_address TEXT
+    sender_address TEXT,
+    admin BOOLEAN
 );
 
           `
@@ -26,12 +27,12 @@ export async function createUserTable(): Promise<void> {
   }
 }
 
-export async function addNewUser(user: UserDetails): Promise<void> {
-  let { id, email, password, senderName, senderAddress } = user;
+export async function addNewUser(user: NewUser): Promise<void> {
+  let { email, password, senderName, senderAddress } = user;
   try {
     const result = await getDbClient().query(
-      "INSERT INTO users (id, email, password, sender_name, sender_address) VALUES ($1, $2, $3, $4, $5)",
-      [id, email, password, senderName, senderAddress]
+      "INSERT INTO users (email, password, sender_name, sender_address,admin) VALUES ($1, $2, $3, $4,$5)",
+      [email, password, senderName, senderAddress, false]
     );
     return;
   } catch (error) {

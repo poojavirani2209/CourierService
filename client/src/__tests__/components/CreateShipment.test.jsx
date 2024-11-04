@@ -28,7 +28,7 @@ describe('CreateShipment Component', () => {
 
     test(`Given proper inputs, then it should create a shipment successfully`, async () => {
         RequestProvider.request.mockReturnValue({
-            post: jest.fn().mockResolvedValue('Shipment created successfully!'),
+            post: jest.fn().mockResolvedValue({ data: 'Shipment created successfully!' }),
         });
 
         render(<CreateShipment />);
