@@ -15,7 +15,6 @@ describe('Dashboard component', () => {
     test(`Given component is called, it should render dashboard`, () => {
         render(<Dashboard />);
         expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText(/UserId/i)).toBeInTheDocument();
     });
 
     test('Given userId, it should fetch and display shipments', async () => {
@@ -25,14 +24,10 @@ describe('Dashboard component', () => {
         ];
 
         RequestProvider.request.mockReturnValue({
-            get: jest.fn().mockResolvedValue(mockShipments),
+            get: jest.fn().mockResolvedValue({status:200,data:mockShipments}),
         });
 
-        render(<Dashboard />);
-
-        fireEvent.change(screen.getByPlaceholderText(/UserId/i), {
-            target: { value: '123' },
-        });
+        render(<Dashboard isAdmin={false} userId={'123'} />);
 
         await waitFor(() => {
             expect(screen.getByText('User1 - Status: COMPLETED')).toBeInTheDocument();
@@ -45,11 +40,7 @@ describe('Dashboard component', () => {
             get: jest.fn().mockRejectedValue(new Error('Failed to fetch data')),
         });
 
-        render(<Dashboard />);
-
-        fireEvent.change(screen.getByPlaceholderText(/UserId/i), {
-            target: { value: '123' },
-        });
+        render(<Dashboard isAdmin={false} userId={'123'} />);
 
         await waitFor(() => {
             expect(screen.getByText(/Failed to fetch data/i)).toBeInTheDocument();

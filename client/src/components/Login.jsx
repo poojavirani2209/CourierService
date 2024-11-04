@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import RequestProvider from '../api/apiRequestProvider';
 import { useNavigate } from 'react-router-dom';
 
-function Login({ onLogin }) {
+function Login({ onLogin, isAdmin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -16,15 +16,23 @@ function Login({ onLogin }) {
                 setMessage('All fields are required');
                 return;
             }
-            const loginResponse = await RequestProvider.request().post(`/users/login`, { email, password });
+            let loginResponse;
+
+            loginResponse = await RequestProvider.request().post(`/users/login`, { email, password });
             if (loginResponse.status == 402) {
                 setMessage(loginResponse.response.data);
             }
             else {
-                setMessage(loginResponse.data);
-                onLogin();
-                navigate("/")
+                setMessage('Logged in successfully');
+                onLogin(loginResponse.data);
+                if (isAdmin) {
+                    navigate("/admin-operations")
+                } else {
+                    navigate("/")
+                }
             }
+
+
         } catch (error) {
             setMessage(`Login failed!`);
         }

@@ -3,6 +3,7 @@ import { createDatabase } from "./database/database";
 import userRouter from "./routes/userRoutes";
 import cors from "cors";
 import shipmentRouter from "./routes/shipmentRoutes";
+import adminRouter from "./routes/adminRoutes";
 /**
  * Create a new express server application listening on the port specified.
  */
@@ -14,6 +15,7 @@ app.use(cors());
 
 app.use("/users", userRouter);
 app.use("/shipments", shipmentRouter);
+app.use("/admin", adminRouter);
 
 export const startApp = async () => {
   app.listen(port, async () => {

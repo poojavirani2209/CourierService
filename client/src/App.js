@@ -14,9 +14,12 @@ import {
 } from "react-router-dom";
 import Home from "./components/Home";
 import UserOperations from "./components/UserOperations";
+import AdminHome from "./components/AdminHome";
+import AdminOperations from "./components/AdminOperations";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loggedInUserId, setLoggedInUserId] = useState(null);
 
   let serverURL = `http://localhost:8887`;
 
@@ -32,15 +35,36 @@ function App() {
           <Route path="/user-operations" element={<UserOperations />} />
           <Route
             path="/user-login"
-            element={<Login onLogin={() => setIsAuthenticated(true)} />}
+            element={
+              <Login
+                isAdmin={false}
+                onLogin={(userData) => {
+                  setLoggedInUserId(userData.id);
+                  setIsAuthenticated(true);
+                }}
+              />
+            }
           />
           <Route path="/register" element={<Register />} />
+          <Route path="/admin/home" element={<AdminHome />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/admin/login"
+            element={
+              <Login onLogin={() => setIsAuthenticated(true)} isAdmin={true} />
+            }
+          />
+          <Route path="/admin/register" element={<Register />} />
+          <Route path="/admin-operations" element={<AdminOperations />} />
+          <Route
+            path="/dashboard-admin"
+            element={<Dashboard isAdmin={true} userId={loggedInUserId} />}
+          />
+          <Route path="/dashboard" element={<Dashboard isAdmin={false} userId={loggedInUserId}/>} />
           <Route path="/create-shipment" element={<CreateShipment />} />
           <Route path="/track-shipment" element={<TrackShipment />} />
 
-          {/* Redirect to Home if route not found */}
+          <Route path="/admin" element={<Navigate to="/admin/home" />} />
           <Route
             path="*"
             element={

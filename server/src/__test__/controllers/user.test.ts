@@ -96,7 +96,7 @@ describe("Login a user", () => {
       password: loginDetails.password,
     });
 
-    expect(response).toBe("Logged in successfully");
+    expect(response).toBe(userDetails);
     expect(findUserByEmail).toHaveBeenCalledWith(userDetails.email);
     expect(bcrypt.compare).toHaveBeenCalledWith(
       loginDetails.password,

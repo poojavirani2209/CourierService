@@ -1,35 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import RequestProvider from '../api/apiRequestProvider';
 
-function Dashboard() {
-    const [userId, setUserId] = useState(null);
+function Dashboard({ isAdmin, userId }) {
     const [shipments, setShipments] = useState([]);
     const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchUserAndShipments = async () => {
             try {
-                const shipmentsResponse = await RequestProvider.request().get('/shipments');
-                shipmentsResponse.status == 200 && setShipments(shipmentsResponse);
+                let shipmentsResponse;
+                if (isAdmin) {
+                    shipmentsResponse = await RequestProvider.request().get('/shipments');
+                } else {
+                    shipmentsResponse = await RequestProvider.request().get(`/shipments?userId=${userId}`);
+                }
+                shipmentsResponse.status == 200 && setShipments(shipmentsResponse.data);
             } catch (err) {
                 setError('Failed to fetch data');
             }
         };
 
         fetchUserAndShipments();
-    }, [userId]);
+    },[userId]);
 
     return (
         <div>
             <h2>Dashboard</h2>
-            <input type="text" placeholder="UserId" onChange={(e) => setUserId(e.target.value)} />
-
             {error && <div style={{ color: 'red' }}>{error}</div>}
             <h3>Your Shipments:</h3>
             <ul>
                 {shipments.map((shipment) => (
                     <li key={shipment.id}>
-                        {shipment.recipientName} - Status: {shipment.status}
+                        {shipment.recipient_name} - Status: {shipment.status}
                     </li>
                 ))}
             </ul>

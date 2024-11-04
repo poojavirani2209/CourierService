@@ -37,7 +37,7 @@ export async function login(loginDetails: UserLoginDetails) {
       console.log(
         `Logged in successfully for user with email ${loginDetails.email}`
       );
-      return `Logged in successfully`;
+      return user;
     } else {
       return `Invalid credentials`;
     }

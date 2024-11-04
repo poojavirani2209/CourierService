@@ -5,6 +5,7 @@ import {
 } from "../../controllers/shipmentController";
 import {
   addShipment,
+  findAllShipments,
   findShipmentByTrackingNumber,
   findShipmentByUserId,
 } from "../../models/shipment";
@@ -149,5 +150,31 @@ describe("Get all shipments for a user", () => {
     (findShipmentByUserId as jest.Mock).mockRejectedValue(mockError);
 
     await expect(getAllShipments("1")).rejects.toThrow("Database error");
+  });
+});
+
+describe("Get all shipments", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("Given no userId, when fetching all the shipments, then it should return all shipments list", async () => {
+    const mockShipments = [
+      { id: "1", recipientName: "User1", status: "COMPLETED" },
+      { id: "2", recipientName: "User2", status: "IN_PROGRESS" },
+    ];
+
+    (findAllShipments as jest.Mock).mockResolvedValue(mockShipments);
+
+    const result = await getAllShipments();
+
+    expect(result).toEqual(mockShipments);
+  });
+
+  test("Given database error occurrs, when fetching all the shipments, then it should throw error", async () => {
+    const mockError = new Error("Database error");
+    (findAllShipments as jest.Mock).mockRejectedValue(mockError);
+
+    await expect(getAllShipments()).rejects.toThrow("Database error");
   });
 });

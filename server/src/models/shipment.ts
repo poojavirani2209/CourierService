@@ -34,12 +34,7 @@ export async function createShipmentTable(): Promise<void> {
 }
 
 export async function addShipment(shipment: NewShipment): Promise<string> {
-  const {
-    userId,
-    recipientName,
-    recipientAddress,
-    shipmentDetails,
-  } = shipment;
+  const { userId, recipientName, recipientAddress, shipmentDetails } = shipment;
 
   const trackingNumber = `TRACK-${Date.now()}`;
 
@@ -90,6 +85,16 @@ export async function findShipmentByUserId(
     return result.rows.length > 0 ? result.rows : null;
   } catch (error) {
     console.error(`Error finding shipment by userId in table: ${error}`);
+    throw error;
+  }
+}
+
+export async function findAllShipments(): Promise<Array<ShipmentDetails> | null> {
+  try {
+    const result = await getDbClient().query("SELECT * FROM shipments");
+    return result.rows.length > 0 ? result.rows : null;
+  } catch (error) {
+    console.error(`Error finding shipments in table: ${error}`);
     throw error;
   }
 }

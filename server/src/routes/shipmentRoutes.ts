@@ -42,7 +42,20 @@ shipmentRouter.get("/:trackingNumber", async (req, res) => {
 
 shipmentRouter.get("/", async (req, res) => {
   try {
-    const { userId } = req.body;
+    const shipments = await shipmentController.getAllShipments();
+    if (shipments == "Invalid UserId") {
+      res.status(402);
+    } else {
+      res.status(200).json(shipments);
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching shipments" });
+  }
+});
+
+shipmentRouter.get("/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
 
     const shipments = await shipmentController.getAllShipments(userId);
     if (shipments == "Invalid UserId") {

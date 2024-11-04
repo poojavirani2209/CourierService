@@ -1,9 +1,10 @@
 import {
   addShipment,
+  findAllShipments,
   findShipmentByTrackingNumber,
   findShipmentByUserId,
 } from "../models/shipment";
-import { NewShipment } from "../types/shipment";
+import { NewShipment, ShipmentDetails } from "../types/shipment";
 
 export async function createShipment(shipment: NewShipment) {
   const { userId, recipientName, recipientAddress, shipmentDetails } = shipment;
@@ -44,9 +45,15 @@ export async function trackShipment(trackingNumber: string) {
   }
 }
 
-export async function getAllShipments(userId: string) {
+export async function getAllShipments(userId?: string) {
   try {
-    const shipments = await findShipmentByUserId(userId);
+    let shipments: Array<ShipmentDetails> | null;
+    if (userId) {
+      shipments = await findShipmentByUserId(userId);
+    } else {
+      shipments = await findAllShipments();
+    }
+
     if (shipments) {
       console.log(`Successfully attained shipments for userId ${userId}`);
       return shipments;
