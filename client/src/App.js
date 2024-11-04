@@ -16,6 +16,7 @@ import Home from "./components/Home";
 import UserOperations from "./components/UserOperations";
 import AdminHome from "./components/AdminHome";
 import AdminOperations from "./components/AdminOperations";
+import UpdateShipmentStatus from "./components/UpdateShipment";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,13 +55,17 @@ function App() {
               <Login onLogin={() => setIsAuthenticated(true)} isAdmin={true} />
             }
           />
-          <Route path="/admin/register" element={<Register />} />
+          <Route path="/admin/register" element={<Register isAdmin={true} />} />
           <Route path="/admin-operations" element={<AdminOperations />} />
           <Route
             path="/dashboard-admin"
             element={<Dashboard isAdmin={true} userId={loggedInUserId} />}
           />
-          <Route path="/dashboard" element={<Dashboard isAdmin={false} userId={loggedInUserId}/>} />
+          <Route path="/admin/edit-shipment/:id" element={<UpdateShipmentStatus />} />
+          <Route
+            path="/dashboard"
+            element={<Dashboard isAdmin={false} userId={loggedInUserId} />}
+          />
           <Route path="/create-shipment" element={<CreateShipment />} />
           <Route path="/track-shipment" element={<TrackShipment />} />
 

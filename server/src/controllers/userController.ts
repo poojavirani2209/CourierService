@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import { NewUser, UserLoginDetails } from "../types/user";
-import { addNewUser, findUserByEmail } from "../models/user";
+import { addAdminUser, addNewUser, findUserByEmail } from "../models/user";
 import { v4 as uuidv4 } from "uuid";
 
-export async function register(userDetails: NewUser, isAdmin:boolean) {
+export async function register(userDetails: NewUser, isAdmin: boolean) {
   const { email, password, senderName, senderAddress } = userDetails;
 
   try {
@@ -14,12 +14,21 @@ export async function register(userDetails: NewUser, isAdmin:boolean) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await addNewUser({
-      email,
-      password: hashedPassword,
-      senderName,
-      senderAddress,
-    });
+    if (isAdmin) {
+      await addAdminUser({
+        email,
+        password: hashedPassword,
+        senderName,
+        senderAddress,
+      });
+    } else {
+      await addNewUser({
+        email,
+        password: hashedPassword,
+        senderName,
+        senderAddress,
+      });
+    }
     console.log(`Inserted user successfully ${userDetails.email}`);
     return `User registered successfully`;
   } catch (error) {

@@ -8,7 +8,7 @@ function AdminOperations() {
     return (
         <div style={{ textAlign: 'center', padding: '50px' }}>
             <p>Please select an option to proceed:</p>
-            <button onClick={() => navigate('/dashboard')}>
+            <button onClick={() => navigate('/dashboard-admin')}>
                 Dashboard
             </button>
         </div>

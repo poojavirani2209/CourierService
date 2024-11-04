@@ -40,6 +40,20 @@ export async function addNewUser(user: NewUser): Promise<void> {
     throw error;
   }
 }
+export async function addAdminUser(user: NewUser): Promise<void> {
+  console.log("hey");
+  let { email, password, senderName, senderAddress } = user;
+  try {
+    const result = await getDbClient().query(
+      "INSERT INTO users (email, password, sender_name, sender_address,admin) VALUES ($1, $2, $3, $4,$5)",
+      [email, password, senderName, senderAddress, true]
+    );
+    return;
+  } catch (error) {
+    console.error(`Error inserting user: ${error}`);
+    throw error;
+  }
+}
 
 export async function findUserByEmail(
   email: string

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import RequestProvider from '../api/apiRequestProvider';
 
-function Register() {
+function Register({ isAdmin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [senderName, setSenderName] = useState('');
@@ -16,7 +16,13 @@ function Register() {
                 setMessage('All fields are required');
                 return;
             }
-            const registrationResponse = await RequestProvider.request().post('/users/register', { email, password, senderName, senderAddress });
+            let registrationResponse;
+            if (isAdmin) {
+                registrationResponse = await RequestProvider.request().post('/admin/register', { email, password, senderName, senderAddress });
+            }
+            else {
+                registrationResponse = await RequestProvider.request().post('/users/register', { email, password, senderName, senderAddress });
+            }
             setMessage(registrationResponse.data);
         } catch (error) {
             setMessage('Registration failed!');

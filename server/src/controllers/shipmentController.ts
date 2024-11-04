@@ -1,10 +1,15 @@
+import { getDbClient } from "../database/database";
 import {
   addShipment,
   findAllShipments,
   findShipmentByTrackingNumber,
   findShipmentByUserId,
 } from "../models/shipment";
-import { NewShipment, ShipmentDetails } from "../types/shipment";
+import {
+  NewShipment,
+  ShipmentDetails,
+  ShipmentStatus,
+} from "../types/shipment";
 
 export async function createShipment(shipment: NewShipment) {
   const { userId, recipientName, recipientAddress, shipmentDetails } = shipment;
@@ -62,6 +67,41 @@ export async function getAllShipments(userId?: string) {
     }
   } catch (error) {
     console.error(`Error occurred while getting shipments for a user`);
+    throw error;
+  }
+}
+
+export async function updateShipmentStatus(
+  shipmentId: string,
+  status: ShipmentStatus
+) {
+  try {
+    const result = await getDbClient().query(
+      `UPDATE shipments
+    SET status = $1
+    WHERE id = $2`,
+      [status, shipmentId]
+    );
+    if (result.rowCount === 0) {
+      throw new Error("Shipment not found");
+    }
+    console.log(`Shipment status updated successfully for ID: ${shipmentId}`);
+  } catch (error) {
+    console.error(`Error updating shipment status: ${error.message}`);
+    throw error;
+  }
+}
+
+export async function getShipmentById(shipmentId: string) {
+  try {
+    const result = await getDbClient().query(
+      `SELECT * FROM shipment
+    WHERE id = $1`,
+      [shipmentId]
+    );
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error(`Error fetching shipment: ${error.message}`);
     throw error;
   }
 }

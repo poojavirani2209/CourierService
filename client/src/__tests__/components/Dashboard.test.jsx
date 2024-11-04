@@ -1,7 +1,6 @@
 import React from "react";
 import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import RequestProvider from "../../api/apiRequestProvider";
-import Login from "../../components/Login";
 import Dashboard from "../../components/Dashboard";
 
 jest.mock(`../../api/apiRequestProvider`);
@@ -19,8 +18,8 @@ describe('Dashboard component', () => {
 
     test('Given userId, it should fetch and display shipments', async () => {
         const mockShipments = [
-            { id: '1', recipientName: 'User1', status: 'COMPLETED' },
-            { id: '2', recipientName: 'User2', status: 'IN_PROGRESS' },
+            { id: '1', recipient_name: 'User1', status: 'COMPLETED' },
+            { id: '2', recipient_name: 'User2', status: 'IN_PROGRESS' },
         ];
 
         RequestProvider.request.mockReturnValue({

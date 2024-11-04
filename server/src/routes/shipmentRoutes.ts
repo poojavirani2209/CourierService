@@ -68,4 +68,30 @@ shipmentRouter.get("/:userId", async (req, res) => {
   }
 });
 
+shipmentRouter.post("/update/:id", async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  try {
+    await shipmentController.updateShipmentStatus(id, status);
+    res.status(200).send("Shipment status updated successfully");
+  } catch (error) {
+    res.status(500).send("Error updating shipment status");
+  }
+});
+
+shipmentRouter.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const shipmentDetails = await shipmentController.getShipmentById(id);
+    res.status(200).json(shipmentDetails);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error occurred while fetching a shipment.`,
+      details: error,
+    });
+  }
+});
+
 export default shipmentRouter;

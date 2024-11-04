@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import RequestProvider from '../api/apiRequestProvider';
+import { Link } from 'react-router-dom';
 
 function Dashboard({ isAdmin, userId }) {
     const [shipments, setShipments] = useState([]);
@@ -21,7 +22,7 @@ function Dashboard({ isAdmin, userId }) {
         };
 
         fetchUserAndShipments();
-    },[userId]);
+    }, [userId]);
 
     return (
         <div>
@@ -32,6 +33,11 @@ function Dashboard({ isAdmin, userId }) {
                 {shipments.map((shipment) => (
                     <li key={shipment.id}>
                         {shipment.recipient_name} - Status: {shipment.status}
+                        {isAdmin && (
+                            <Link to={`/admin/edit-shipment/${shipment.id}`}>
+                                <button>Edit Status</button>
+                            </Link>
+                        )}
                     </li>
                 ))}
             </ul>
