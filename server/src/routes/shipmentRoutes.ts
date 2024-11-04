@@ -23,4 +23,20 @@ shipmentRouter.post("/create", async (req, res) => {
   }
 });
 
+shipmentRouter.get("/:trackingNumber", async (req, res) => {
+  try {
+    const { trackingNumber } = req.body;
+
+    const shipmentDetails = await shipmentController.trackShipment(
+      trackingNumber
+    );
+    res.status(200).json(shipmentDetails);
+  } catch (error) {
+    res.status(500).json({
+      error: `Error occurred while tracking a shipment.`,
+      details: error,
+    });
+  }
+});
+
 export default shipmentRouter;

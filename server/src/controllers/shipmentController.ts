@@ -1,4 +1,4 @@
-import { addShipment } from "../models/shipment";
+import { addShipment, findShipmentByTrackingNumber } from "../models/shipment";
 import { NewShipment, ShipmentStatus } from "../types/shipment";
 import { v4 as uuidv4 } from "uuid";
 
@@ -21,11 +21,28 @@ export async function createShipment(shipment: NewShipment) {
     console.log(
       `Inserted shipment successfully with tracking number ${trackingNumber}`
     );
-    return `New Shipment added successfully`;
+    return trackingNumber;
   } catch (error) {
     console.error(
       `Error occurred while adding a new shipment in shipments table`
     );
+    throw error;
+  }
+}
+
+export async function trackShipment(trackingNumber: string) {
+  try {
+    const shipment = await findShipmentByTrackingNumber(trackingNumber);
+    if (shipment) {
+      console.log(
+        `Successfully attained shipment for trackingNumber ${trackingNumber}`
+      );
+      return shipment;
+    } else {
+      return `Invalid Tracking Number`;
+    }
+  } catch (error) {
+    console.error(`Error occurred while tracking a shipment`);
     throw error;
   }
 }

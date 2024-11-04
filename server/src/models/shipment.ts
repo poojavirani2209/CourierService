@@ -65,3 +65,20 @@ export async function addShipment(shipment: ShipmentDetails): Promise<void> {
     throw error;
   }
 }
+
+export async function findShipmentByTrackingNumber(
+  trackingNumber: string
+): Promise<ShipmentDetails | null> {
+  try {
+    const result = await getDbClient().query(
+      "SELECT * FROM shipments WHERE tracking_number = $1",
+      [trackingNumber]
+    );
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error(
+      `Error finding shipment by tracking number in table: ${error}`
+    );
+    throw error;
+  }
+}
